@@ -9,35 +9,43 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class DriveTrain extends Subsystem {
 	
-	private RobotDrive drive; 
-	public double x;
-	public double rot;
+	private RobotDrive drive;
 	
-	public DriveTrain() {
+	private double speedCoefficient = 0.75;
+	
+	public DriveTrain(){
 		super("DriveTrain");
+		
 		drive = new RobotDrive(
-				new Talon(RobotMap.BACK_LEFT_TALON),
 				new Talon(RobotMap.FRONT_LEFT_TALON),
-				new Talon(RobotMap.BACK_RIGHT_TALON),
-				new Talon(RobotMap.FRONT_RIGHT_TALON)
+				new Talon(RobotMap.BACK_LEFT_TALON),
+				new Talon(RobotMap.FRONT_RIGHT_TALON),
+				new Talon(RobotMap.BACK_RIGHT_TALON)
 		);
 	}
 	
-	public void drive(double x, double rot) {
+	public void set(double x, double rot) {
 		drive.arcadeDrive(x, rot);
 	}
 	
 	public void drive(Joystick controller){
-		x = controller.getRawAxis(RobotMap.LEFT_STICK_Y);
-		rot = controller.getRawAxis(RobotMap.RIGHT_STICK_X);
-		drive(x,rot);
+		//
+		double x = controller.getRawAxis(RobotMap.LEFT_STICK_Y) * speedCoefficient;
+		double rot = controller.getRawAxis(RobotMap.RIGHT_STICK_X) * speedCoefficient;
+		set(x,rot);
 	}
 	
-    
-    
-
+	public void setSpeedCoefficient(double value) {
+		speedCoefficient = value;
+	}
+	
+	public double getSpeedCoefficient(){
+		return speedCoefficient;
+	}
+	
     public void initDefaultCommand() {
        setDefaultCommand(new DriveControlled());
     }
+    
 }
 

@@ -17,7 +17,7 @@ public class SpinIntake extends Command {
     }
 
     protected void execute() {
-    	Robot.intake.setSpeed(speed);
+    	Robot.intake.set(speed);
     }
 
     protected boolean isFinished() {
@@ -26,11 +26,13 @@ public class SpinIntake extends Command {
 
     
     protected void end() {
-    	Robot.intake.setSpeed(0);
+    	//Stops motors
+    	Robot.intake.set(0);
     }
 
     
     protected void interrupted() {
-    	Robot.intake.setSpeed(0);
+    	//Stops motors
+    	Robot.intake.set(0);
     }
 }
