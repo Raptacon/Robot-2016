@@ -3,51 +3,57 @@ package org.usfirst.frc.team3200.robot.sensors;
 import org.usfirst.frc.team3200.robot.RobotMap;
 
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.PIDSource;
+import edu.wpi.first.wpilibj.PIDSourceType;
 
-public class DriveEncoders {
+public class DriveEncoders implements PIDSource {
 	
-	public Encoder encoderFR;
-	public Encoder encoderFL;
-	public Encoder encoderBR;
-	public Encoder encoderBL;
+	public Encoder encoderLeft;
+	public Encoder encoderRight;
 	
-	private double initialDist;
-	private double finalDist;
+	private PIDSourceType sourceType = PIDSourceType.kDisplacement;
 	
-	
-	private double distPerPulse =.0283514;
-	private double normalDist = 24;
+	//when driving on carpet at 0.5 speed
+	private double distPerPulse = 0.0042149631 * 1.1583333333; //feet
 	
 	public DriveEncoders(){
-		encoderBL = new Encoder(RobotMap.BL_ENCODER_A,RobotMap.BL_ENCODER_B);
-		encoderFL = new Encoder(RobotMap.FL_ENCODER_A,RobotMap.FL_ENCODER_B);
-		encoderBR = new Encoder(RobotMap.BR_ENCODER_A,RobotMap.BR_ENCODER_B);
-		encoderFR = new Encoder(RobotMap.FR_ENCODER_A,RobotMap.FR_ENCODER_B);
+		encoderLeft  = RobotMap.LEFT_ENCODER;
+		encoderRight = RobotMap.RIGHT_ENCODER;
 		
-		encoderBL.setDistancePerPulse(distPerPulse);
-		encoderFL.setDistancePerPulse(distPerPulse);
-		encoderBR.setDistancePerPulse(distPerPulse);
-		encoderFR.setDistancePerPulse(distPerPulse);
+		encoderLeft.setDistancePerPulse(-distPerPulse);
+		encoderRight.setDistancePerPulse(distPerPulse);
+		
+		encoderLeft.reset();
+		encoderRight.reset();
 	}
 	
-	public double getDistance(){
-		return (encoderBL.getDistance() + encoderFL.getDistance() + encoderBR.getDistance() + encoderFR.getDistance())/4;
+	public double getMeanDistance(){
+		return ((encoderLeft.getDistance() + encoderRight.getDistance()) / 2.0);
 	}
 	
-	public double WheelSlippage(){
-		//When returns certain angle which indicates robot is passing obstacle:
-		initialDist = getDistance(); //after loop
-		finalDist = getDistance();
-		return (finalDist - initialDist) - normalDist;
+	public double getLeft() {
+		return encoderLeft.getDistance();
 	}
 	
-	public void printAll(){
-		System.out.println(this.encoderBL.get());
-		System.out.println(this.encoderFL.get());
-		System.out.println(this.encoderBR.get());
-		System.out.println(this.encoderFR.get());
+	public double getRight() {
+		return encoderRight.getDistance();
 	}
 	
-	
+	public void reset() {
+	    encoderLeft.reset();
+        encoderRight.reset();
+	}
 
+    public void setPIDSourceType(PIDSourceType pidSource) {
+        sourceType = pidSource;
+        
+    }
+
+    public PIDSourceType getPIDSourceType() {
+        return sourceType;
+    }
+
+    public double pidGet() {
+        return getMeanDistance();
+    }
 }

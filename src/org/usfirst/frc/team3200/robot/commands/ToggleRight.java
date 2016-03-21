@@ -17,9 +17,9 @@ public class ToggleRight extends Command {
     protected void initialize() {
     	//Inverts lifter state depending on current lifter state
     	if(Robot.lifterR.get() == RobotMap.LIFTER_UP){
-    		Robot.lifterR.lowerRight();
+    		Robot.lifterR.lower();
     	} else {
-    		Robot.lifterR.raiseRight();
+    		Robot.lifterR.lift();
     	}
     }
 

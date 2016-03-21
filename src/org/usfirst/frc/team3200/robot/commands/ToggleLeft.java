@@ -17,9 +17,9 @@ public class ToggleLeft extends Command {
     protected void initialize() {
     	//Inverts lifter state depending on current lifter state
     	if(Robot.lifterL.get() == RobotMap.LIFTER_UP){
-    		Robot.lifterL.lowerLeft();
+    		Robot.lifterL.lower();
     	} else {
-    		Robot.lifterL.raiseLeft();
+    		Robot.lifterL.lift();
     	}
     }
 

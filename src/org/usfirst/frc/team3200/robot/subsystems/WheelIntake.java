@@ -1,6 +1,7 @@
 package org.usfirst.frc.team3200.robot.subsystems;
 
 import org.usfirst.frc.team3200.robot.RobotMap;
+import org.usfirst.frc.team3200.robot.commands.SpinControlled;
 
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -11,7 +12,7 @@ public class WheelIntake extends Subsystem {
 	 
     public WheelIntake(){
     	super("WheelIntake");
-    	shooter = new Talon(RobotMap.SHOOTER_TALON);
+    	shooter = RobotMap.SHOOTER_TALON;
     }
      
      public void set(double speed) {
@@ -19,7 +20,7 @@ public class WheelIntake extends Subsystem {
 	}
 
     public void initDefaultCommand() {
-        //No default
+        setDefaultCommand(new SpinControlled());
     }
 }
 

@@ -13,19 +13,19 @@ public class RightLifter extends Subsystem {
     
     public RightLifter(){
     	super("RightLifter");
-    	rightLifter = new DoubleSolenoid(RobotMap.RIGHT_LIFTER_A, RobotMap.RIGHT_LIFTER_B);
+    	rightLifter = RobotMap.RIGHT_LIFTER;
     }
     
-    public void raiseRight(){
-    	rightLifter.set(DoubleSolenoid.Value.kForward);
+    public void lift(){
+    	rightLifter.set(DoubleSolenoid.Value.kReverse);
     }
 
-    public void lowerRight(){
-    	rightLifter.set(DoubleSolenoid.Value.kReverse);
+    public void lower(){
+    	rightLifter.set(DoubleSolenoid.Value.kForward);
     }
     
     public int get(){
-    	if(rightLifter.get() == DoubleSolenoid.Value.kForward) {
+    	if(rightLifter.get() == DoubleSolenoid.Value.kReverse) {
     		return RobotMap.LIFTER_UP;
     	} else {
     		return RobotMap.LIFTER_DOWN;

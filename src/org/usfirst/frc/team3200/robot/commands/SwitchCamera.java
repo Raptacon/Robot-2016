@@ -1,41 +1,43 @@
 package org.usfirst.frc.team3200.robot.commands;
 
 import org.usfirst.frc.team3200.robot.Robot;
+import org.usfirst.frc.team3200.robot.RobotMap;
 
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
  *
  */
-public class PushBall extends Command {
+public class SwitchCamera extends Command {
 
-    public PushBall() {
-        requires(Robot.ballPusher);
+    public SwitchCamera() {
+        
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-        setTimeout(0.3);
+        if(Robot.cameras.cameraMode == RobotMap.CAMERA_FRONT) {
+            Robot.cameras.setCameraMode(RobotMap.CAMERA_REAR);
+        } else {
+            Robot.cameras.setCameraMode(RobotMap.CAMERA_FRONT);
+        }
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	Robot.ballPusher.set(-0.5);
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-    	 return isTimedOut();
+        return true;
     }
 
     // Called once after isFinished returns true
     protected void end() {
-        Robot.ballPusher.set(0);
     }
 
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
-        Robot.ballPusher.set(0);
     }
 }

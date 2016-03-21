@@ -7,43 +7,47 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class Rotate extends Command {
-	double startRot;
+public class TraverseSimple extends Command {
+	
+	private boolean inclineComplete; 
+	private boolean declineComplete;
 
-	double goalRotation;
-	double speed;
-
-    public Rotate(double rot, double speed) {
+    public TraverseSimple() {
        requires(Robot.driveTrain);
-       this.goalRotation = rot;
-       this.speed = speed;
-       this.speed *= Math.signum(goalRotation);
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	startRot = Robot.gyro.getRot();
-    	
+    	inclineComplete = false;
+    	declineComplete = false;
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	 Robot.driveTrain.set(0, speed);
+    	double pitch = Robot.imu.getPitch();
+    	if(!inclineComplete && pitch > 5) {
+    		inclineComplete = true;
+    	} else if(!declineComplete && pitch < -5) {
+    		declineComplete = true;
+    	}
+    	
+    	Robot.driveTrain.set(0.5, 0);
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-    	return Math.abs(Robot.gyro.getRot()-startRot) >= Math.abs(goalRotation);
+    	double pitch = Robot.imu.getPitch();
+    	return (inclineComplete && declineComplete && pitch < 2 && pitch > -2);
     }
 
     // Called once after isFinished returns true
     protected void end() {
-    	Robot.driveTrain.set(0,0);
+        Robot.driveTrain.set(0, 0);
     }
 
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
-    	Robot.driveTrain.set(0,0);
+        Robot.driveTrain.set(0, 0);
     }
 }
