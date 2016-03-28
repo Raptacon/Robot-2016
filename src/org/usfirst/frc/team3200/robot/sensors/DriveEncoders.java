@@ -14,7 +14,7 @@ public class DriveEncoders implements PIDSource {
 	private PIDSourceType sourceType = PIDSourceType.kDisplacement;
 	
 	//when driving on carpet at 0.5 speed
-	private double distPerPulse = 0.0042149631 * 1.1583333333; //feet
+	private double distPerPulse = 0.0042149631 * 1.1583333333 * 0.7416666667; //feet
 	
 	public DriveEncoders(){
 		encoderLeft  = RobotMap.LEFT_ENCODER;

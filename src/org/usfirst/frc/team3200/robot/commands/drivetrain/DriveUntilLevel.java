@@ -1,4 +1,4 @@
-package org.usfirst.frc.team3200.robot.commands.Autonomous;
+package org.usfirst.frc.team3200.robot.commands.drivetrain;
 
 import org.usfirst.frc.team3200.robot.Robot;
 
@@ -7,41 +7,39 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class TraverseRockWall extends Command {
-    
-    private boolean wallComplete;
+public class DriveUntilLevel extends Command {
+    private double speed;
+
+    private boolean inclineComplete; 
     private boolean declineComplete;
 
-    public TraverseRockWall() {
+    public DriveUntilLevel(double speed) {
        requires(Robot.driveTrain);
+       this.speed = speed;
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-        wallComplete = false;
+        inclineComplete = false;
         declineComplete = false;
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
         double pitch = Robot.imu.getPitch();
-        double acceleration = Robot.imu.getAccelY();
-        
-        if(!wallComplete && acceleration < -5) {
-            Robot.lifterL.lift();
-            Robot.lifterR.lower();
-            wallComplete = true;
+        if(!inclineComplete && pitch > 5) {
+            inclineComplete = true;
         } else if(!declineComplete && pitch < -5) {
             declineComplete = true;
         }
         
-        Robot.driveTrain.set(0.75, 0);
+        Robot.driveTrain.set(-speed, 0);
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
         double pitch = Robot.imu.getPitch();
-        return (declineComplete && pitch < 2 && pitch > -2);
+        return (inclineComplete && declineComplete && pitch < 2 && pitch > -2);
     }
 
     // Called once after isFinished returns true

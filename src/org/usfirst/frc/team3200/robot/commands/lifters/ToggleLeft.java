@@ -1,4 +1,4 @@
-package org.usfirst.frc.team3200.robot.commands;
+package org.usfirst.frc.team3200.robot.commands.lifters;
 
 import org.usfirst.frc.team3200.robot.Robot;
 import org.usfirst.frc.team3200.robot.RobotMap;
@@ -8,18 +8,18 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class ToggleRight extends Command {
+public class ToggleLeft extends Command {
 
-    public ToggleRight() {
-        requires(Robot.lifterR);
+    public ToggleLeft() {
+        requires(Robot.lifterL);
     }
 
     protected void initialize() {
     	//Inverts lifter state depending on current lifter state
-    	if(Robot.lifterR.get() == RobotMap.LIFTER_UP){
-    		Robot.lifterR.lower();
+    	if(Robot.lifterL.get() == RobotMap.LIFTER_UP){
+    		Robot.lifterL.lower();
     	} else {
-    		Robot.lifterR.lift();
+    		Robot.lifterL.lift();
     	}
     }
 
@@ -32,7 +32,7 @@ public class ToggleRight extends Command {
 
     protected void end() {
     }
-
+    
     protected void interrupted() {
     }
 }

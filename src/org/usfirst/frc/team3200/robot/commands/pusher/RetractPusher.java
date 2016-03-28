@@ -1,43 +1,42 @@
-package org.usfirst.frc.team3200.robot.commands;
+package org.usfirst.frc.team3200.robot.commands.pusher;
 
 import org.usfirst.frc.team3200.robot.Robot;
-import org.usfirst.frc.team3200.robot.RobotMap;
 
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
  */
-public class SpinControlled extends Command {
+public class RetractPusher extends Command {
 
-    public SpinControlled() {
-        requires(Robot.intake);
+    public RetractPusher() {
+        requires(Robot.ballPusher);
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-        
+        setTimeout(0.1);
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-        double speed = Robot.oi.getController2().getRawAxis(RobotMap.RIGHT_STICK_Y);
-        Robot.intake.set(speed);
-        SmartDashboard.putNumber("Shooter Speed", speed);
+    	Robot.ballPusher.set(-0.25);
+    	
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return false;
+    	 return isTimedOut();
     }
 
     // Called once after isFinished returns true
     protected void end() {
+        Robot.ballPusher.set(0);
     }
 
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
+        Robot.ballPusher.set(0);
     }
 }

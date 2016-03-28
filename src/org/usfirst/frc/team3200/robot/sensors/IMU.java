@@ -13,7 +13,12 @@ public class IMU {
 	public IMU() {
 		imu = new I2C(I2C.Port.kOnboard, 0x28);
 		
+		//flip y and z axes
+		imu.write(0x42, 0x3);
+		
+		//set to measurement mode
 		imu.write(0x3D, 0x8);
+		
 		
 		pidHeading = new PIDHeading();
 	}

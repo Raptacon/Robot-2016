@@ -1,4 +1,4 @@
-package org.usfirst.frc.team3200.robot.commands;
+package org.usfirst.frc.team3200.robot.commands.drivetrain;
 
 import org.usfirst.frc.team3200.robot.Robot;
 
@@ -6,9 +6,6 @@ import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-/**
- *
- */
 public class DriveDistance extends Command {
     
 	private double goalDist;
@@ -16,10 +13,12 @@ public class DriveDistance extends Command {
 	private PIDController pid;
 	
     public DriveDistance(double goal) {
+        requires(Robot.driveTrain);
+        
         goalDist = goal;
     	
-    	pid = new PIDController(0.1, 0, 0, Robot.driveEncoders, Robot.driveTrain.pidDistance);
-    	pid.setOutputRange(-0.5, 0.5);
+    	pid = new PIDController(-5, 0, -10, Robot.driveEncoders, Robot.driveTrain.pidDistance);
+    	pid.setOutputRange(-1, 1);
     	pid.setAbsoluteTolerance(1);
     	
     	SmartDashboard.putData("Distance PID", pid);

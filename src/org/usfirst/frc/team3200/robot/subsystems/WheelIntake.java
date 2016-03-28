@@ -1,7 +1,7 @@
 package org.usfirst.frc.team3200.robot.subsystems;
 
 import org.usfirst.frc.team3200.robot.RobotMap;
-import org.usfirst.frc.team3200.robot.commands.SpinControlled;
+import org.usfirst.frc.team3200.robot.commands.wheelintake.SpinControlled;
 
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.command.Subsystem;

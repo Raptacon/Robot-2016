@@ -1,38 +1,56 @@
 package org.usfirst.frc.team3200.robot.subsystems;
 
 import org.usfirst.frc.team3200.robot.RobotMap;
-import org.usfirst.frc.team3200.robot.commands.MoveShooter;
+import org.usfirst.frc.team3200.robot.commands.variableshooter.MoveShooter;
 
 import edu.wpi.first.wpilibj.CANTalon;
-import edu.wpi.first.wpilibj.CANTalon.FeedbackDevice;
 import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
 import edu.wpi.first.wpilibj.PIDOutput;
+import edu.wpi.first.wpilibj.PIDSource;
+import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 
-/**
- *
- */
-public class VariableShooter extends Subsystem {
+public class VariableShooter extends Subsystem implements PIDOutput, PIDSource {
+    
+    public final int UPPER_LIMIT = -900;
+    public final int LOWER_LIMIT = -275;
 
     private CANTalon vShooter;
-    public PIDDistance pidDistance;
+    
+    PIDSourceType sourceType = PIDSourceType.kDisplacement;
+    
     public VariableShooter() {
         super("VariableShooter");
         vShooter = RobotMap.VARIABLE_SHOOTER;
-        vShooter.changeControlMode(TalonControlMode.Speed);
-        vShooter.setFeedbackDevice(FeedbackDevice.AnalogPot);
-        vShooter.setPID(1.0, 0, 0);
-        vShooter.setF(2);
-        vShooter.reverseSensor(true);
-        pidDistance = new PIDDistance();
+        vShooter.changeControlMode(TalonControlMode.PercentVbus);
+//        vShooter.changeControlMode(TalonControlMode.Speed);
+//        vShooter.setFeedbackDevice(FeedbackDevice.AnalogPot);
+//        vShooter.setPID(1.0, 0, 0);
+//        vShooter.setF(0);
+//        vShooter.reverseSensor(true);
         
-        //vShooter.setReverseSoftLimit(-425);
-        //vShooter.enableReverseSoftLimit(true);
+//        vShooter.setForwardSoftLimit(LOWER_LIMIT);
+//        vShooter.enableForwardSoftLimit(true);
+//        vShooter.setReverseSoftLimit(UPPER_LIMIT);
+//        vShooter.enableReverseSoftLimit(true);
     }
 
     public void set(double speed) {
-        vShooter.set(speed * 1024 * 0.5);
+        if(Math.abs(speed) > 0.1) {
+            vShooter.set(-speed);
+            //vShooter.set(speed * 1024 * -2.5);
+        } else {
+            vShooter.set(0);
+        }
+    }
+    
+    public boolean getUpperLimit() {
+        return (vShooter.getReverseSoftLimit() == 1);
+    }
+    
+    public boolean getLowerLimit() {
+        return (vShooter.getForwardSoftLimit() == 1);
     }
     
     public double getAngle() {
@@ -43,17 +61,28 @@ public class VariableShooter extends Subsystem {
         return vShooter.getSpeed();
     }
     
-    public double getCurrent() {
-        return vShooter.getOutputCurrent();
+    public double getVoltage() {
+        return vShooter.getBusVoltage();
     }
 
     protected void initDefaultCommand() {
         setDefaultCommand(new MoveShooter());
     }
+
     
-    private class PIDDistance implements PIDOutput {
-        public void pidWrite(double output) {
-            set(output);
-        }
-    }    
+    public void pidWrite(double output) {
+        vShooter.set(output);
+    }
+
+    public void setPIDSourceType(PIDSourceType pidSource) {
+        sourceType = pidSource;
+    }
+
+    public PIDSourceType getPIDSourceType() {
+        return sourceType;
+    }
+
+    public double pidGet() {
+        return vShooter.getPosition();
+    }
 }

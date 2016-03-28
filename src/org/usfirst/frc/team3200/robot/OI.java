@@ -1,17 +1,15 @@
 package org.usfirst.frc.team3200.robot;
 
-import org.usfirst.frc.team3200.robot.commands.AdjustSpeedCoefficient;
-import org.usfirst.frc.team3200.robot.commands.AlignVertical;
-import org.usfirst.frc.team3200.robot.commands.PushAndRetract;
-import org.usfirst.frc.team3200.robot.commands.RetractPusher;
-import org.usfirst.frc.team3200.robot.commands.SpinIntake;
 import org.usfirst.frc.team3200.robot.commands.SwitchCamera;
-import org.usfirst.frc.team3200.robot.commands.ToggleLeft;
-//import org.usfirst.frc.team3200.robot.commands.TogglePush;
-import org.usfirst.frc.team3200.robot.commands.ToggleRight;
+import org.usfirst.frc.team3200.robot.commands.lifters.ToggleLeft;
+import org.usfirst.frc.team3200.robot.commands.lifters.ToggleRight;
+import org.usfirst.frc.team3200.robot.commands.pusher.PushAndRetract;
+import org.usfirst.frc.team3200.robot.commands.pusher.RetractPusher;
+import org.usfirst.frc.team3200.robot.commands.wheelintake.SpinIntake;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
+//import org.usfirst.frc.team3200.robot.commands.TogglePush;
 
 public class OI {
 	private Joystick controller1;
@@ -21,9 +19,7 @@ public class OI {
 	private JoystickButton buttonShoot;
 	private JoystickButton buttonRightLifter;
 	private JoystickButton buttonLeftLifter;
-	private JoystickButton buttonSpeedUp;
-	private JoystickButton buttonSpeedDown;
-	private JoystickButton buttonAlign;
+//	private JoystickButton buttonAlign;
 	private JoystickButton buttonPush;
 	private JoystickButton buttonCamera;
 	
@@ -35,8 +31,6 @@ public class OI {
 			case RobotMap.SINGLE_DRIVER:
 				buttonRightLifter = new JoystickButton(controller1, RobotMap.RIGHT_BUMPER);
 				buttonLeftLifter  = new JoystickButton(controller1, RobotMap.LEFT_BUMPER);
-				buttonSpeedUp     = new JoystickButton(controller1, RobotMap.BUTTON_Y);
-				buttonSpeedDown   = new JoystickButton(controller1, RobotMap.BUTTON_X);
 				buttonRetrieve    = new JoystickButton(controller1, RobotMap.BUTTON_A);
 				buttonShoot       = new JoystickButton(controller1, RobotMap.BUTTON_B);
 				buttonPush        = new JoystickButton(controller1, RobotMap.BUTTON_SELECT);
@@ -45,25 +39,21 @@ public class OI {
 			case RobotMap.DOUBLE_DRIVER:
 				buttonRightLifter = new JoystickButton(controller1, RobotMap.RIGHT_BUMPER);
 				buttonLeftLifter  = new JoystickButton(controller1, RobotMap.LEFT_BUMPER);
-				buttonSpeedUp     = new JoystickButton(controller1, RobotMap.BUTTON_A);
-				buttonSpeedDown   = new JoystickButton(controller1, RobotMap.BUTTON_B);
 				buttonRetrieve    = new JoystickButton(controller2, RobotMap.BUTTON_A);
 				buttonShoot       = new JoystickButton(controller2, RobotMap.BUTTON_B);
 				buttonPush        = new JoystickButton(controller2, RobotMap.LEFT_BUMPER);
-				buttonAlign       = new JoystickButton(controller1, RobotMap.BUTTON_Y);
+//				buttonAlign       = new JoystickButton(controller1, RobotMap.BUTTON_Y);
 				buttonCamera      = new JoystickButton(controller1, RobotMap.BUTTON_X);
 				break;
 		}
 		
-		buttonRetrieve.whileHeld(new SpinIntake(0.25));
+		buttonRetrieve.whileHeld(new SpinIntake(0.75));
 		buttonRetrieve.whenReleased(new RetractPusher());
-		buttonShoot.whileHeld(new SpinIntake(-0.4));
+		buttonShoot.whileHeld(new SpinIntake(-0.5));
 		buttonRightLifter.whenPressed(new ToggleRight());
 		buttonLeftLifter.whenPressed(new ToggleLeft());
-		buttonSpeedUp.whenPressed(new AdjustSpeedCoefficient(0.25));
-		buttonSpeedDown.whenPressed(new AdjustSpeedCoefficient(-0.25));
 		buttonPush.whenPressed(new PushAndRetract());
-		buttonAlign.whenPressed(new AlignVertical());
+		//buttonAlign.whenPressed(new AlignVertical());
 		buttonCamera.whenPressed(new SwitchCamera());
 	}
 	

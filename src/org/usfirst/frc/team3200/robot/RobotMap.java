@@ -1,9 +1,9 @@
 package org.usfirst.frc.team3200.robot;
 
 import edu.wpi.first.wpilibj.CANTalon;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Talon;
 
 
@@ -38,20 +38,20 @@ public class RobotMap {
 	public static final int BUTTON_RIGHT_JOYSTICK = 10;
 	
 	//Motors
-	public static final Talon FRONT_LEFT_TALON  = new Talon(1);
-	public static final Talon FRONT_RIGHT_TALON = new Talon(3);
-    public static final Talon BACK_RIGHT_TALON  = new Talon(5);
-	public static final Talon BACK_LEFT_TALON   = new Talon(2);
+	public static final Talon FRONT_LEFT_TALON  = new Talon(2);
+	public static final Talon FRONT_RIGHT_TALON = new Talon(4);
+    public static final Talon BACK_RIGHT_TALON  = new Talon(1);
+	public static final Talon BACK_LEFT_TALON   = new Talon(3);
 	
 	//Variable Shooter
 	public static final CANTalon VARIABLE_SHOOTER = new CANTalon(0);
 	
 	//Solenoids
-	public static final DoubleSolenoid LEFT_LIFTER  = new DoubleSolenoid(0, 1);
-	public static final DoubleSolenoid RIGHT_LIFTER = new DoubleSolenoid(2, 3);
+	public static final Solenoid LEFT_LIFTER  = new Solenoid(0);
+	public static final Solenoid RIGHT_LIFTER = new Solenoid(1);
 	
 	//Ball Shooter
-	public static final Talon SHOOTER_TALON = new Talon(8);
+	public static final Talon SHOOTER_TALON = new Talon(0);
 	public static final CANTalon PUSHER_TALON = new CANTalon(1);
 	
 	//Encoders

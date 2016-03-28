@@ -15,36 +15,46 @@ public class Cameras {
     
     public int cameraMode = RobotMap.CAMERA_REAR;
     
+    boolean camerasFound = false;
+    
     public Cameras() {
-        try {
-            cameraRear = new USBCamera("cam4");
-        } catch (VisionException e) {
-            System.out.println("Rear camera not found!");
-            cameraRear = null;
-        }
-        try {
-            cameraFront = new USBCamera("cam5");
-        } catch (VisionException E) {
-            cameraFront = null;
-            System.out.println("Front camera not found!");
-        }
+        findCameras();
         
-        if(cameraRear != null) {
+        if(camerasFound) {
             cameraRear.startCapture();
         }
     }
     
-    public Image getImage() {
-        if(cameraMode == RobotMap.CAMERA_REAR) {
-            if(cameraRear != null) cameraRear.getImage(cameraImg);
-        } else {
-            if(cameraFront != null) cameraFront.getImage(cameraImg);
+    private void findCameras() {
+        try {
+            cameraRear = new USBCamera("cam0");
+            cameraFront = new USBCamera("cam1");
+            camerasFound = true;
+        } catch (VisionException e) {
+            System.out.println("Cameras not found!");
+            cameraRear = null;
+            cameraFront = null;
         }
+    }
+    
+    public Image getImage() {
+        if(!camerasFound) {
+            findCameras();
+        }
+        
+        if(camerasFound) {
+            if(cameraMode == RobotMap.CAMERA_REAR) {
+                cameraRear.getImage(cameraImg);
+            } else {
+                cameraFront.getImage(cameraImg);
+            }
+        }
+        
         return cameraImg;
     }
     
     public void setCameraMode(int mode) {
-        if(cameraRear != null && cameraFront != null) {
+        if(camerasFound) {
             if(mode == RobotMap.CAMERA_REAR) {
                 cameraFront.stopCapture();
                 cameraRear.startCapture();
@@ -55,5 +65,9 @@ public class Cameras {
                 cameraMode = mode;
             }
         }
+    }
+    
+    public boolean getCamerasFound() {
+        return camerasFound;
     }
 }

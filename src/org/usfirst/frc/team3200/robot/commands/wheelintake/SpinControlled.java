@@ -1,41 +1,43 @@
-package org.usfirst.frc.team3200.robot.commands;
+package org.usfirst.frc.team3200.robot.commands.wheelintake;
 
 import org.usfirst.frc.team3200.robot.Robot;
+import org.usfirst.frc.team3200.robot.RobotMap;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
  */
-public class PushBall extends Command {
+public class SpinControlled extends Command {
 
-    public PushBall() {
-        requires(Robot.ballPusher);
+    public SpinControlled() {
+        requires(Robot.intake);
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-        setTimeout(0.3);
+        
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	Robot.ballPusher.set(-0.5);
+        double speed = Robot.oi.getController2().getRawAxis(RobotMap.RIGHT_STICK_Y);
+        Robot.intake.set(speed);
+        SmartDashboard.putNumber("Shooter Speed", speed);
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-    	 return isTimedOut();
+        return false;
     }
 
     // Called once after isFinished returns true
     protected void end() {
-        Robot.ballPusher.set(0);
     }
 
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
-        Robot.ballPusher.set(0);
     }
 }

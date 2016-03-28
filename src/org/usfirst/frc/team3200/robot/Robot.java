@@ -1,8 +1,15 @@
 
 package org.usfirst.frc.team3200.robot;
 
-import org.usfirst.frc.team3200.robot.commands.DriveDistance;
-import org.usfirst.frc.team3200.robot.commands.Rotate;
+import org.usfirst.frc.team3200.robot.commands.autonomous.CombinedAuto;
+import org.usfirst.frc.team3200.robot.commands.autonomous.defenseauto.LowBarAuto;
+import org.usfirst.frc.team3200.robot.commands.autonomous.defenseauto.RockWallAuto;
+import org.usfirst.frc.team3200.robot.commands.autonomous.defenseauto.RoughTerrainAuto;
+import org.usfirst.frc.team3200.robot.commands.autonomous.scoreauto.Position1HighAuto;
+import org.usfirst.frc.team3200.robot.commands.autonomous.scoreauto.Position2HighAuto;
+import org.usfirst.frc.team3200.robot.commands.autonomous.scoreauto.Position3HighAuto;
+import org.usfirst.frc.team3200.robot.commands.autonomous.scoreauto.Position4HighAuto;
+import org.usfirst.frc.team3200.robot.commands.autonomous.scoreauto.Position5HighAuto;
 import org.usfirst.frc.team3200.robot.sensors.Cameras;
 import org.usfirst.frc.team3200.robot.sensors.DriveEncoders;
 import org.usfirst.frc.team3200.robot.sensors.IMU;
@@ -13,9 +20,11 @@ import org.usfirst.frc.team3200.robot.subsystems.RightLifter;
 import org.usfirst.frc.team3200.robot.subsystems.VariableShooter;
 import org.usfirst.frc.team3200.robot.subsystems.WheelIntake;
 
-import edu.wpi.first.wpilibj.AnalogInput;
+import com.ni.vision.VisionException;
+
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -27,15 +36,19 @@ public class Robot extends IterativeRobot {
 
 	public static OI oi;
 	
+	PowerDistributionPanel PDU;
+	
     public static CameraServer camServer;
 
-    private Command autoCommand;
+    private Command defenseAuto;
+    private Command scoreAuto;
+    private CommandGroup combinedAuto;
     
-    private SendableChooser autoChooser;
+    private SendableChooser defenseAutoChooser;
+    private SendableChooser scoreAutoChooser;
     
     public static int driverMode = RobotMap.DOUBLE_DRIVER;
     
-    public static AnalogInput pot;
     public static DriveTrain driveTrain;
     public static WheelIntake intake;
     public static LeftLifter lifterL;
@@ -60,16 +73,37 @@ public class Robot extends IterativeRobot {
 		imu             = new IMU();
 		driveEncoders   = new DriveEncoders();
 		cameras         = new Cameras();
-		pot             = new AnalogInput(1);
 		
-		autoChooser = new SendableChooser();
-		autoChooser.addDefault("Do Nothing", new CommandGroup(){/* It does nothing! */});
-		autoChooser.addObject("Rotate 90 degrees Clockwise ", new Rotate(90, 1));
-		autoChooser.addObject("Drive 10 feet", new DriveDistance(10));
+		defenseAutoChooser = new SendableChooser();
+		defenseAutoChooser.addDefault("Do Nothing", new CommandGroup(){/* It does nothing! */});
+		defenseAutoChooser.addObject("Low Bar", new LowBarAuto());
+//		defenseAutoChooser.addObject("Portcullis", new PortcullisAuto());
+//		defenseAutoChooser.addObject("Cheval de Frise", new ChevalDeFriseAuto());
+//		defenseAutoChooser.addObject("Moat", new MoatAuto());
+//		defenseAutoChooser.addObject("Ramparts", new RampartAuto());
+//		defenseAutoChooser.addObject("Drawbridge", new DrawbridgeAuto());
+//		defenseAutoChooser.addObject("Sally Port", new SallyPortAuto());
+		defenseAutoChooser.addObject("Rock Wall", new RockWallAuto());
+		defenseAutoChooser.addObject("Rough Terrain", new RoughTerrainAuto());
 		
-		SmartDashboard.putData("Auto Mode", autoChooser);
+		SmartDashboard.putData("Defense Auto", defenseAutoChooser);
+		
+		scoreAutoChooser = new SendableChooser();
+		scoreAutoChooser.addDefault("Do Nothing", new CommandGroup() {/* As useful as a two-party government! */});
+		scoreAutoChooser.addObject("Position 1 High", new Position1HighAuto());
+		scoreAutoChooser.addObject("Position 2 High", new Position2HighAuto());
+		scoreAutoChooser.addObject("Position 3 High", new Position3HighAuto());
+		scoreAutoChooser.addObject("Position 4 High", new Position4HighAuto());
+		scoreAutoChooser.addObject("Position 5 High", new Position5HighAuto());
+		
+		SmartDashboard.putData("Scoring Auto", scoreAutoChooser);
+		
+		PDU = new PowerDistributionPanel();
+		SmartDashboard.putData("PDU", PDU);
 		
 		oi = new OI();
+		
+		SmartDashboard.putData(Scheduler.getInstance());
     }
     
     public void disabledInit(){
@@ -81,8 +115,11 @@ public class Robot extends IterativeRobot {
 	}
 
     public void autonomousInit() {
-    	autoCommand = (Command) autoChooser.getSelected();
-        if (autoCommand != null) autoCommand.start();
+    	defenseAuto = (Command) defenseAutoChooser.getSelected();
+    	scoreAuto   = (Command) scoreAutoChooser.getSelected();
+    	
+    	combinedAuto = new CombinedAuto(defenseAuto, scoreAuto);
+    	combinedAuto.start();
     }
 
     public void autonomousPeriodic() {
@@ -91,9 +128,8 @@ public class Robot extends IterativeRobot {
     }
 
     public void teleopInit() {
-        if (autoCommand != null) autoCommand.cancel();
-    }
-
+        if (combinedAuto != null) combinedAuto.cancel();
+   }
 
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
@@ -113,14 +149,19 @@ public class Robot extends IterativeRobot {
         SmartDashboard.putNumber("Roll", imu.getRoll());
         SmartDashboard.putNumber("Acceleration X", imu.getAccelX());
         SmartDashboard.putNumber("Acceleration Y", imu.getAccelY());
-        SmartDashboard.putBoolean("Left Lifter Up", lifterL.get() == RobotMap.LIFTER_UP);
-        SmartDashboard.putBoolean("Right Lifter Up", lifterR.get() == RobotMap.LIFTER_UP);
+        SmartDashboard.putBoolean("Left Lifter Up", lifterL.get() == RobotMap.LIFTER_DOWN);
+        SmartDashboard.putBoolean("Right Lifter Up", lifterR.get() == RobotMap.LIFTER_DOWN);
         SmartDashboard.putNumber("Shooter Angle", variableShooter.getAngle());
         SmartDashboard.putNumber("Shooter Speed", variableShooter.getSpeed());
-        SmartDashboard.putNumber("Shooter Current", variableShooter.getCurrent());
+        SmartDashboard.putNumber("Shooter Current", variableShooter.getVoltage());
         SmartDashboard.putNumber("Shooter Angle", variableShooter.getAngle());
         SmartDashboard.putBoolean("IMU Visible", imu.addressIMU());
+        SmartDashboard.putBoolean("Cameras Found", cameras.getCamerasFound());
         
-        camServer.setImage(cameras.getImage());
+        try {
+            camServer.setImage(cameras.getImage());
+        } catch(VisionException e) {
+            
+        }
     }
 }

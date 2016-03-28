@@ -2,14 +2,14 @@ package org.usfirst.frc.team3200.robot.subsystems;
 
 import org.usfirst.frc.team3200.robot.RobotMap;
 
-import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 /**
  *
  */
 public class LeftLifter extends Subsystem {
-	DoubleSolenoid leftLifter;
+	Solenoid leftLifter;
     
     public LeftLifter(){
     	super("LeftLifter");
@@ -17,15 +17,15 @@ public class LeftLifter extends Subsystem {
     }
     
     public void lift(){
-    	leftLifter.set(DoubleSolenoid.Value.kReverse);;
+    	leftLifter.set(false);// DoubleSolenoid.Value.kReverse);
     }
     
     public void lower(){
-    	leftLifter.set(DoubleSolenoid.Value.kForward);	
+    	leftLifter.set(true);//DoubleSolenoid.Value.kForward);	
     }
     
     public int get(){
-    	if(leftLifter.get() == DoubleSolenoid.Value.kReverse) {
+    	if(leftLifter.get() == false) {//DoubleSolenoid.Value.kReverse) {
     		return RobotMap.LIFTER_UP;
     	} else {
     		return RobotMap.LIFTER_DOWN;

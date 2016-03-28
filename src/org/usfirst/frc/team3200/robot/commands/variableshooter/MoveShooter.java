@@ -1,4 +1,4 @@
-package org.usfirst.frc.team3200.robot.commands;
+package org.usfirst.frc.team3200.robot.commands.variableshooter;
 
 import org.usfirst.frc.team3200.robot.Robot;
 import org.usfirst.frc.team3200.robot.RobotMap;
@@ -27,11 +27,11 @@ public class MoveShooter extends Command {
 			Joystick controller = Robot.oi.getController1();
 			double up = controller.getRawAxis(RobotMap.LEFT_TRIGGER);
 			double down = controller.getRawAxis(RobotMap.RIGHT_TRIGGER);
-			Robot.variableShooter.set(-0.5 * (up - down));
+			Robot.variableShooter.set(up - down);
 		} else if (Robot.driverMode == RobotMap.DOUBLE_DRIVER) {
 			Joystick controller = Robot.oi.getController2();
 			double speed = controller.getRawAxis(RobotMap.LEFT_STICK_Y);
-			Robot.variableShooter.set(-0.5 * speed);
+			Robot.variableShooter.set(speed);
 		}
 	}
 
